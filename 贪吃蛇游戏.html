@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            position: relative;
+        }
+        #gameCanvas {
+            border: 2px solid #000;
+            background-color: #000;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        #gameOver {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: red;
+            z-index: 10;
+        }
+        #restartButton {
+            display: none;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            padding: 10px 20px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">分数: 0</div>
+    <canvas id="gameCanvas" width="1500" height="700"></canvas>
+    <img id="snakeHead" src="./贪吃蛇游戏_files/tp1.png" style="display: none;">
+    <img id="No1Head" src="./贪吃蛇游戏_files/tp2/No1.png" style="display: none;">
+    <img id="No2Head" src="./贪吃蛇游戏_files/tp2/No2.png" style="display: none;">
+    <div id="gameOver" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-weight: bold; color: red; z-index: 10;">GAME OVER</div>
+    <button id="restartButton" style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; padding: 10px 20px; z-index: 10;">重新开始</button>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const snakeHeadImage = document.getElementById('snakeHead');
+        const No1HeadImage = document.getElementById('No1Head');
+        const No2HeadImage = document.getElementById('No2Head');
+
+        const cellSize = 50; // 每个格子的大小
+        const rows = canvas.height / cellSize;
+        const cols = canvas.width / cellSize;
+
+        let snake = [{ x: 10, y: 10 }]; // 蛇的初始位置
+        let direction = { x: 0, y: 0 }; // 初始方向
+        let food = { x: 5, y: 5 }; // 食物的初始位置
+        let gameRunning = true;
+        let score = 0; // 增加分数变量
+        let currentHeadImage = snakeHeadImage; // 当前蛇头图片
+
+        function drawSnake() {
+            snake.forEach((segment, index) => {
+                let color;
+                if (snake.length <= 10) {
+                    color = 'green';
+                } else if (snake.length <= 20) {
+                    color = 'blue';
+                } else if (snake.length <= 50) {
+                    color = 'red';
+                } else if (snake.length <= 70) {
+                    color = 'purple';
+                } else {
+                    color = getRandomColor(); // 随机颜色
+                }
+                ctx.fillStyle = color;
+                ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+            });
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function drawFood() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x * cellSize, food.y * cellSize, cellSize, cellSize);
+        }
+
+        function moveSnake() {
+            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+            snake.unshift(head); // 在蛇头位置添加新的头部
+
+            // 检查是否吃到食物
+            if (head.x === food.x && head.y === food.y) {
+                generateFood(); // 生成新的食物
+                score += 1; // 吃到食物后增加分数
+                updateScore(); // 更新分数显示
+                if (currentHeadImage === No1HeadImage) {
+                    currentHeadImage = No2HeadImage; // 变成No2.png
+                    setTimeout(() => {
+                        currentHeadImage = No1HeadImage; // 然后变回No1.png
+                    }, 100); // 100毫秒后变回
+                }
+            } else {
+                snake.pop(); // 移除蛇尾
+            }
+        }
+
+        function checkCollision() {
+            const head = snake[0];
+            // 检查是否撞墙
+            if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+                gameRunning = false;
+            }
+            // 检查是否撞到自己
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameRunning = false;
+                }
+            }
+        }
+
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * cols),
+                y: Math.floor(Math.random() * rows)
+            };
+        }
+
+        function gameLoop() {
+            if (!gameRunning) {
+                document.getElementById('gameOver').style.display = 'block'; // 显示 GAME OVER
+                document.getElementById('restartButton').style.display = 'block'; // 显示重新开始按钮
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除画布
+            moveSnake();
+            checkCollision();
+            drawSnake();
+            drawFood();
+            drawSnakeHead();
+        }
+
+        function drawSnakeHead() {
+            const head = snake[0];
+            const angle = calculateAngle(direction);
+            ctx.save(); // 保存当前绘图状态
+            ctx.translate(head.x * cellSize + cellSize / 2, head.y * cellSize + cellSize / 2); // 移动到蛇头中心
+            ctx.rotate(angle); // 旋转画布
+            ctx.drawImage(currentHeadImage, -cellSize / 2, -cellSize / 2, cellSize, cellSize); // 绘制蛇头
+            ctx.restore(); // 恢复绘图状态
+        }
+
+        function calculateAngle(direction) {
+            switch (true) {
+                case direction.x === 0 && direction.y === -1:
+                    return 0; // 向上
+                case direction.x === 0 && direction.y === 1:
+                    return Math.PI; // 向下
+                case direction.x === -1 && direction.y === 0:
+                    return -Math.PI / 2; // 向左
+                case direction.x === 1 && direction.y === 0:
+                    return Math.PI / 2; // 向右
+                default:
+                    return 0;
+            }
+        }
+
+        document.getElementById('restartButton').addEventListener('click', resetGame);
+
+        function resetGame() {
+            snake = [{ x: 10, y: 10 }]; // 重置蛇的位置
+            direction = { x: 0, y: 0 }; // 重置方向
+            food = { x: 5, y: 5 }; // 重置食物位置
+            gameRunning = true; // 重新开始游戏
+            score = 0; // 重置分数
+            currentHeadImage = snakeHeadImage; // 重置蛇头图片
+            updateScore(); // 更新分数显示
+            document.getElementById('gameOver').style.display = 'none'; // 隐藏 GAME OVER
+            document.getElementById('restartButton').style.display = 'none'; // 隐藏重新开始按钮
+        }
+
+        setInterval(gameLoop, 200);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) { // 检测是否按下Ctrl键
+                if (currentHeadImage === snakeHeadImage) {
+                    currentHeadImage = No1HeadImage; // 切换到No1.png
+                } else if (currentHeadImage === No1HeadImage) {
+                    currentHeadImage = snakeHeadImage; // 切换回tp1.png
+                }
+            }
+
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (direction.y === 0) direction = { x: 0, y: -1 };
+                    break;
+                case 'ArrowDown':
+                    if (direction.y === 0) direction = { x: 0, y: 1 };
+                    break;
+                case 'ArrowLeft':
+                    if (direction.x === 0) direction = { x: -1, y: 0 };
+                    break;
+                case 'ArrowRight':
+                    if (direction.x === 0) direction = { x: 1, y: 0 };
+                    break;
+            }
+        });
+
+        function updateScore() {
+            scoreElement.textContent = `分数: ${score}`;
+        }
+    </script>
+</body>
+</html>
