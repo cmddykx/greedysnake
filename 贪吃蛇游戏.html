@@ -1,73 +1,73 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇游戏</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-            position: relative;
-        }
-        #gameCanvas {
-            border: 2px solid #000;
-            background-color: #000;
-        }
-        #score {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            font-weight: bold;
+﻿
+"en">
+<头>
+    <meta http-equiv=="Content-Type" content"text/html; charset=UTF-8">
+    <meta name=="viewport" content"width=device-width, initial-scale=1.0">
+    <标题>贪吃蛇游戏</标题>
+    <样式>
+        身体
+            字体：Arial，无衬线字体;
+            显示：弹性布局;
+            文本对齐：居中;
+            对齐项目：居中;
+            高度：;100vh
+            背景颜色：#f0f0f0
+            边距：0;
+            位置：相对;
+        输入：}
+
+            边框：#000;2像素 实线
+            背景颜色: #000;
+        输入：}
+        #
+            位置：绝对定位;
+            top：;10px
+            left：;50%
+            transform：;translateX(-50%)
+            font-size：;24px
+            font-weight：bold;
             color: #333;
             background-color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        #gameOver {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            padding5px 10px
+            border-radius：;5px
+        输入：}
+        #游戏结束 {
+            显示：无;
+            位置：绝对;
+            顶部: 50%;
+            左: 50%;
             transform: translate(-50%, -50%);
-            font-size: 48px;
-            font-weight: bold;
-            color: red;
+            字体大小: 48px;
+            字体加粗；
+            颜色：红色；
             z-index: 10;
         }
-        #restartButton {
-            display: none;
-            position: absolute;
-            top: 60%;
-            left: 50%;
+        #重启按钮 {
+            显示：无；
+            位置：绝对定位；
+            顶部: 60%;
+            左: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
-            padding: 10px 20px;
+            字体大小: 24px;
+            填充：10px 20px;
             z-index: 10;
         }
-    </style>
-</head>
-<body>
+    </样式>
+</头部>
+<身体>
     <div id="score">分数: 0</div>
-    <canvas id="gameCanvas" width="1500" height="700"></canvas>
-    <img id="snakeHead" src="./贪吃蛇游戏_files/tp1.png" style="display: none;">
-    <img id="No1Head" src="./贪吃蛇游戏_files/tp2/No1.png" style="display: none;">
-    <img id="No2Head" src="./贪吃蛇游戏_files/tp2/No2.png" style="display: none;">
-    <div id="gameOver" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-weight: bold; color: red; z-index: 10;">GAME OVER</div>
-    <button id="restartButton" style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; padding: 10px 20px; z-index: 10;">重新开始</button>
+    <画布 id="游戏画布" 宽度="1500" 高度="700"></画布>
+    <img id="snakeHead" src=".tp1.png" style="display: none;">
+    <img id="No1Head" src=".No1.png" style="display: none;">
+    <img id="No2Head" src=".No2.png" style="display: none;"><img id="No2Head" src=".No2.png" style="display: none;">
+    <div id="gameOver" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 48px; font-weight: bold; color: red; z-index: 10;>游戏结束</div>
+    <button id="restartButton" style="display: none; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; padding: 10px 20px; z-index: 10;">重新开始</按钮>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const snakeHeadImage = document.getElementById('snakeHead');
+    <脚本>
+        常量 画布 = 文档.通过ID获取元素('游戏画布');
+        常量 上下文 = 画布.getContext('2d');
+        常量 分数元素 = 文档.通过ID获取元素('分数');
+        常量 蛇头图像 = 文档.通过ID获取元素('蛇头');
         const No1HeadImage = document.getElementById('No1Head');
         const No2HeadImage = document.getElementById('No2Head');
 
@@ -238,8 +238,8 @@
         });
 
         function updateScore() {
-            scoreElement.textContent = `分数: ${score}`;
-        }
-    </script>
-</body>
+            scoreElement.textContent = 分数: ${score};
+        输入：}
+    </脚本>
+</主体>
 </html>
